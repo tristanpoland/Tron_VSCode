@@ -1,0 +1,138 @@
+{
+  "Rust Function Template": {
+    "prefix": "tron-fn",
+    "body": [
+      "fn @[${1:function_name}]@(${2:@[params]@}) -> ${3:@[return_type]@} {",
+      "    ${4:@[body]@}",
+      "}"
+    ],
+    "description": "Create a Rust function template with Tron placeholders"
+  },
+  "Rust Struct Template": {
+    "prefix": "tron-struct",
+    "body": [
+      "#[derive(${1:Debug})]",
+      "pub struct @[${2:struct_name}]@ {",
+      "    ${3:@[fields]@}",
+      "}"
+    ],
+    "description": "Create a Rust struct template with Tron placeholders"
+  },
+  "Rust Impl Block Template": {
+    "prefix": "tron-impl",
+    "body": [
+      "impl @[${1:struct_name}]@ {",
+      "    ${2:@[methods]@}",
+      "}"
+    ],
+    "description": "Create a Rust impl block template with Tron placeholders"
+  },
+  "Rust Module Template": {
+    "prefix": "tron-mod",
+    "body": [
+      "pub mod @[${1:module_name}]@ {",
+      "    ${2:@[imports]@}",
+      "",
+      "    ${3:@[content]@}",
+      "}"
+    ],
+    "description": "Create a Rust module template with Tron placeholders"
+  },
+  "Serde Struct Template": {
+    "prefix": "tron-serde",
+    "body": [
+      "use serde::{Serialize, Deserialize};",
+      "",
+      "#[derive(Debug, Clone, Serialize, Deserialize)]",
+      "pub struct @[${1:struct_name}]@ {",
+      "    ${2:@[fields]@}",
+      "}"
+    ],
+    "description": "Create a Serde-enabled struct template"
+  },
+  "REST API Handler Template": {
+    "prefix": "tron-api",
+    "body": [
+      "/// @[${1:description}]@",
+      "pub async fn @[${2:handler_name}]@(${3:@[params]@}) -> Result<@[${4:response_type}]@, @[${5:error_type}]@> {",
+      "    ${6:@[body]@}",
+      "}"
+    ],
+    "description": "Create an async REST API handler template"
+  },
+  "Database Model Template": {
+    "prefix": "tron-db",
+    "body": [
+      "use sqlx::FromRow;",
+      "use serde::{Serialize, Deserialize};",
+      "",
+      "#[derive(Debug, Clone, Serialize, Deserialize, FromRow)]",
+      "pub struct @[${1:model_name}]@ {",
+      "    ${2:@[fields]@}",
+      "}",
+      "",
+      "impl @[${1:model_name}]@ {",
+      "    pub async fn find_by_id(pool: &sqlx::PgPool, id: ${3:i32}) -> Result<Option<Self>, sqlx::Error> {",
+      "        ${4:@[find_query]@}",
+      "    }",
+      "",
+      "    pub async fn create(pool: &sqlx::PgPool, ${5:@[create_params]@}) -> Result<Self, sqlx::Error> {",
+      "        ${6:@[create_query]@}",
+      "    }",
+      "}"
+    ],
+    "description": "Create a database model template with CRUD methods"
+  },
+  "Configuration Template": {
+    "prefix": "tron-config",
+    "body": [
+      "use serde::{Deserialize, Serialize};",
+      "use std::collections::HashMap;",
+      "",
+      "#[derive(Debug, Clone, Serialize, Deserialize)]",
+      "pub struct @[${1:config_name}]@ {",
+      "    pub name: String,",
+      "    pub version: String,",
+      "    ${2:@[additional_fields]@}",
+      "    pub settings: HashMap<String, String>,",
+      "}"
+    ],
+    "description": "Create a configuration struct template"
+  },
+  "Error Type Template": {
+    "prefix": "tron-error",
+    "body": [
+      "use thiserror::Error;",
+      "",
+      "#[derive(Error, Debug)]",
+      "pub enum @[${1:error_name}]@ {",
+      "    #[error(\"${2:@[error_message]@}\")]",
+      "    ${3:@[error_variants]@}",
+      "}"
+    ],
+    "description": "Create an error enum template using thiserror"
+  },
+  "Test Template": {
+    "prefix": "tron-test",
+    "body": [
+      "#[cfg(test)]",
+      "mod tests {",
+      "    use super::*;",
+      "",
+      "    #[test]",
+      "    fn test_@[${1:test_name}]@() -> Result<(), @[${2:error_type}]@> {",
+      "        ${3:@[test_body]@}",
+      "        Ok(())",
+      "    }",
+      "}"
+    ],
+    "description": "Create a test module template"
+  },
+  "Basic Placeholder": {
+    "prefix": "placeholder",
+    "body": [
+      "@[${1:placeholder_name}]@"
+    ],
+    "description": "Insert a basic Tron placeholder"
+  }
+}

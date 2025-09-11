@@ -1,0 +1,147 @@
+{
+  "name": "tron-template-engine",
+  "displayName": "Tron Template Engine",
+  "description": "VSCode extension for Tron template engine with syntax highlighting, validation, and live preview",
+  "version": "1.0.0",
+  "publisher": "tron-templates",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tristanpoland/Tron_RS"
+  },
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other"
+  ],
+  "keywords": [
+    "template",
+    "template-engine",
+    "tron",
+    "rust",
+    "code-generation"
+  ],
+  "activationEvents": [
+    "onLanguage:tron"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "tron",
+        "aliases": [
+          "Tron Template",
+          "tron"
+        ],
+        "extensions": [
+          ".tron",
+          ".tpl"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "tron",
+        "scopeName": "source.tron",
+        "path": "./syntaxes/tron.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "tron",
+        "path": "./snippets/tron-snippets.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "tron.validateTemplate",
+        "title": "Validate Template",
+        "category": "Tron"
+      },
+      {
+        "command": "tron.previewTemplate",
+        "title": "Preview Template",
+        "category": "Tron"
+      },
+      {
+        "command": "tron.insertSnippet",
+        "title": "Insert Template Snippet",
+        "category": "Tron"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "tron.validateTemplate",
+        "key": "ctrl+shift+t",
+        "when": "resourceExtname == .tron || resourceExtname == .tpl"
+      },
+      {
+        "command": "tron.previewTemplate",
+        "key": "ctrl+shift+p",
+        "when": "resourceExtname == .tron || resourceExtname == .tpl"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceExtname == .tron || resourceExtname == .tpl",
+          "command": "tron.validateTemplate",
+          "group": "tron"
+        },
+        {
+          "when": "resourceExtname == .tron || resourceExtname == .tpl",
+          "command": "tron.previewTemplate",
+          "group": "tron"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Tron Template Engine",
+      "properties": {
+        "tron.validation.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable template validation"
+        },
+        "tron.validation.minPlaceholderLength": {
+          "type": "number",
+          "default": 2,
+          "description": "Minimum length for placeholder names"
+        },
+        "tron.validation.checkTrailingWhitespace": {
+          "type": "boolean",
+          "default": false,
+          "description": "Check for trailing whitespace in templates (disabled by default)"
+        },
+        "tron.preview.autoRefresh": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-refresh preview when template changes"
+        },
+        "tron.snippets.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable template snippets"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Tron Template",
+  "scopeName": "source.tron",
+  "patterns": [
+    {
+      "include": "#placeholders"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#rust-syntax"
+    }
+  ],
+  "repository": {
+    "placeholders": {
+      "patterns": [
+        {
+          "name": "variable.parameter.tron",
+          "match": "@\\[[^\\]]+\\]@",
+          "captures": {
+            "0": {
+              "patterns": [
+                {
+                  "name": "punctuation.definition.placeholder.begin.tron",
+                  "match": "@\\["
+                },
+                {
+                  "name": "entity.name.tag.placeholder.tron",
+                  "match": "[^\\]]+",
+                  "patterns": [
+                    {
+                      "name": "invalid.illegal.placeholder.name.tron",
+                      "match": "\\s+"
+                    },
+                    {
+                      "name": "support.type.placeholder.name.tron",
+                      "match": "[a-zA-Z_][a-zA-Z0-9_]*"
+                    }
+                  ]
+                },
+                {
+                  "name": "punctuation.definition.placeholder.end.tron",
+                  "match": "\\]@"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "invalid.illegal.placeholder.malformed.tron",
+          "match": "@\\[[^\\]]*$|@\\[\\s*\\]@|@@"
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.tron",
+          "begin": "//",
+          "end": "$",
+          "patterns": [
+            {
+              "name": "markup.italic.comment.tron",
+              "match": "TODO|FIXME|NOTE|HACK|XXX"
+            }
+          ]
+        },
+        {
+          "name": "comment.block.tron",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "patterns": [
+            {
+              "name": "markup.italic.comment.tron",
+              "match": "TODO|FIXME|NOTE|HACK|XXX"
+            }
+          ]
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.tron",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.tron",
+              "match": "\\\\."
+            },
+            {
+              "include": "#placeholders"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.tron",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.tron",
+              "match": "\\\\."
+            },
+            {
+              "include": "#placeholders"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.backtick.tron",
+          "begin": "`",
+          "end": "`",
+          "patterns": [
+            {
+              "name": "constant.character.escape.tron",
+              "match": "\\\\."
+            },
+            {
+              "include": "#placeholders"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.raw.tron",
+          "begin": "r#*\"",
+          "end": "\"#*",
+          "patterns": [
+            {
+              "include": "#placeholders"
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.decimal.tron",
+          "match": "\\b\\d+(\\.\\d+)?([eE][+-]?\\d+)?\\b"
+        },
+        {
+          "name": "constant.numeric.hex.tron",
+          "match": "\\b0[xX][a-fA-F0-9]+\\b"
+        },
+        {
+          "name": "constant.numeric.octal.tron",
+          "match": "\\b0[oO][0-7]+\\b"
+        },
+        {
+          "name": "constant.numeric.binary.tron",
+          "match": "\\b0[bB][01]+\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.tron",
+          "match": "\\b(if|else|while|for|loop|match|return|break|continue|in)\\b"
+        },
+        {
+          "name": "keyword.other.tron",
+          "match": "\\b(fn|let|mut|const|static|struct|enum|impl|trait|type|pub|use|mod|extern|crate|self|super|where|async|await|move|ref)\\b"
+        },
+        {
+          "name": "storage.type.tron",
+          "match": "\\b(i8|i16|i32|i64|i128|isize|u8|u16|u32|u64|u128|usize|f32|f64|bool|char|str|String)\\b"
+        },
+        {
+          "name": "constant.language.tron",
+          "match": "\\b(true|false|None|Some|Ok|Err|Self)\\b"
+        }
+      ]
+    },
+    "rust-syntax": {
+      "patterns": [
+        {
+          "name": "entity.name.function.tron",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\s*(?=\\()"
+        },
+        {
+          "name": "entity.name.type.tron",
+          "match": "\\b[A-Z][a-zA-Z0-9_]*\\b"
+        },
+        {
+          "name": "keyword.operator.tron",
+          "match": "\\+|\\-|\\*|\\/|%|=|==|!=|<|>|<=|>=|&&|\\|\\||!|&|\\||\\^|<<|>>|\\+=|\\-=|\\*=|\\/=|%=|&=|\\|=|\\^=|<<=|>>="
+        },
+        {
+          "name": "punctuation.separator.tron",
+          "match": ";|,|\\.|::"
+        },
+        {
+          "name": "punctuation.brackets.tron",
+          "match": "[\\{\\}\\[\\]\\(\\)]"
+        }
+      ]
+    }
+  }
+}
