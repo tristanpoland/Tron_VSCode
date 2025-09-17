@@ -1,3 +1,8 @@
+
+<p align="center">
+    <img src="branding/TRON_logo.png" alt="Tron Extension Logo" width="180"/>
+</p>
+
 # Tron Template Engine - VSCode Extension
 
 A comprehensive VSCode extension for the [Tron Template Engine](https://github.com/tristanpoland/Tron_RS), providing syntax highlighting, validation, snippets, and live preview for Tron template files.

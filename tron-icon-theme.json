@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/theme-defaults/schemas/icon-theme.schema.json",
+  "iconDefinitions": {
+    "tron-file": {
+      "iconPath": "./branding/Icon.png"
+    }
+  },
+  "fileExtensions": {
+    "tron": "tron-file",
+    "tpl": "tron-file"
+  },
+  "languageIds": {
+    "tron": "tron-file"
+  },
+  "fileNames": {},
+  "folderNames": {},
+  "folderNamesExpanded": {},
+  "rootFolder": "",
+  "rootFolderExpanded": ""
+}

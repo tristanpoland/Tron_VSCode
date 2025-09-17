@@ -2,7 +2,7 @@
   "name": "tron-template-engine",
   "displayName": "Tron Template Engine",
   "description": "VSCode extension for Tron template engine with syntax highlighting, validation, and live preview",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "publisher": "tron-templates",
   "license": "MIT",
   "repository": {
@@ -40,7 +40,11 @@
           ".tron",
           ".tpl"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./branding/Icon.png",
+          "dark": "./branding/Icon.png"
+        }
       }
     ],
     "grammars": [
@@ -129,18 +133,32 @@
           "description": "Enable template snippets"
         }
       }
-    }
+    },
+    "fileIcons": [
+      {
+        "id": "tron-file-icons",
+        "description": "Tron file icons for .tron and .tpl files",
+        "languageIds": ["tron"],
+        "fileExtensions": ["tron", "tpl"],
+        "icon": {
+          "light": "./branding/Icon.png",
+          "dark": "./branding/Icon.png"
+        }
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./"
   },
+  "icon": "branding/TRON_logo.png",
   "devDependencies": {
     "@types/vscode": "^1.74.0",
     "@types/node": "16.x",
     "typescript": "^4.9.4"
   },
+  "extensionKind": ["ui", "workspace"],
   "dependencies": {
     "axios": "^1.6.0"
   }
