@@ -21,25 +21,35 @@ export class TronPreview {
                     retainContextWhenHidden: true
                 }
             );
-            
             this.previewPanel.onDidDispose(() => {
                 this.previewPanel = undefined;
             });
         }
-        
+
+        // Always update preview to match the active .tron/.tpl file
         this.updatePreview(document);
-        
+
+        // Listen for active editor changes to update preview to the new Tron file
+        const updateForActiveEditor = vscode.window.onDidChangeActiveTextEditor(editor => {
+            if (editor && (editor.document.languageId === 'tron')) {
+                this.updatePreview(editor.document);
+            }
+        });
+        this.previewPanel.onDidDispose(() => updateForActiveEditor.dispose());
+
         // Auto-refresh if enabled
         const config = vscode.workspace.getConfiguration('tron.preview');
         const autoRefresh = config.get<boolean>('autoRefresh', true);
-        
         if (autoRefresh) {
             const disposable = vscode.workspace.onDidChangeTextDocument(event => {
-                if (event.document === document && this.previewPanel) {
-                    this.updatePreview(document);
+                if (event.document.languageId === 'tron' && this.previewPanel) {
+                    // Only update if the preview is showing the same file
+                    const activeEditor = vscode.window.activeTextEditor;
+                    if (activeEditor && activeEditor.document === event.document) {
+                        this.updatePreview(event.document);
+                    }
                 }
             });
-            
             this.previewPanel.onDidDispose(() => disposable.dispose());
         }
     }
@@ -147,6 +157,9 @@ export class TronPreview {
     private getWebviewContent(templateContent: string, analysis: TemplateAnalysis): string {
         const renderedTemplate = this.renderTemplate(templateContent, analysis.sampleValues);
         
+        // Get extension logo as webview URI
+        const logoUri = this.previewPanel?.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'branding', 'TRON_logo.png'));
+
         return `
         <!DOCTYPE html>
         <html lang="en">
@@ -162,13 +175,25 @@ export class TronPreview {
                     background-color: var(--vscode-editor-background);
                     color: var(--vscode-editor-foreground);
                 }
-                
                 .header {
                     border-bottom: 1px solid var(--vscode-panel-border);
                     padding-bottom: 15px;
                     margin-bottom: 20px;
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
                 }
-                
+                .tron-logo {
+                    height: 40px;
+                    width: 40px;
+                    border-radius: 8px;
+                    background: var(--vscode-sideBar-background);
+                    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+                }
+                .header-title {
+                    font-size: 1.6em;
+                    font-weight: bold;
+                }
                 .template-type {
                     color: var(--vscode-textPreformat-foreground);
                     background: var(--vscode-textBlockQuote-background);
@@ -177,30 +202,25 @@ export class TronPreview {
                     display: inline-block;
                     font-size: 12px;
                 }
-                
                 .stats {
                     margin: 10px 0;
                     font-size: 14px;
                     color: var(--vscode-descriptionForeground);
                 }
-                
                 .section {
                     margin: 20px 0;
                 }
-                
                 .section-title {
                     font-weight: bold;
                     margin-bottom: 10px;
                     color: var(--vscode-textLink-foreground);
                 }
-                
                 .placeholders {
                     display: flex;
                     flex-wrap: wrap;
                     gap: 8px;
                     margin: 10px 0;
                 }
-                
                 .placeholder-tag {
                     background: var(--vscode-badge-background);
                     color: var(--vscode-badge-foreground);
@@ -208,7 +228,6 @@ export class TronPreview {
                     border-radius: 3px;
                     font-size: 11px;
                 }
-                
                 .code-block {
                     background: var(--vscode-textCodeBlock-background);
                     border: 1px solid var(--vscode-panel-border);
@@ -219,31 +238,25 @@ export class TronPreview {
                     white-space: pre;
                     line-height: 1.4;
                 }
-                
                 .template-source {
                     border-left: 3px solid var(--vscode-textLink-foreground);
                 }
-                
                 .template-rendered {
                     border-left: 3px solid var(--vscode-testing-iconPassed);
                 }
-                
                 .placeholder-highlight {
                     background: var(--vscode-editor-findMatchHighlightBackground);
                     border-radius: 2px;
                     padding: 1px 2px;
                 }
-                
                 .sample-values {
                     font-size: 12px;
                     margin: 10px 0;
                 }
-                
                 .sample-value {
                     margin: 4px 0;
                     color: var(--vscode-descriptionForeground);
                 }
-                
                 .refresh-note {
                     font-size: 12px;
                     font-style: italic;
@@ -258,11 +271,12 @@ export class TronPreview {
         </head>
         <body>
             <div class="header">
-                <h1>🔷 Tron Template Preview</h1>
-                <div class="template-type">${analysis.templateType}</div>
-                <div class="stats">
-                    📊 ${analysis.lineCount} lines • ${analysis.characterCount} characters • ${analysis.placeholders.length} unique placeholders
-                </div>
+                <img class="tron-logo" src="${logoUri}" alt="Tron Logo" />
+                <span class="header-title">Tron Template Preview</span>
+            </div>
+            <div class="template-type">${analysis.templateType}</div>
+            <div class="stats">
+                📊 ${analysis.lineCount} lines • ${analysis.characterCount} characters • ${analysis.placeholders.length} unique placeholders
             </div>
 
             <div class="section">
@@ -292,7 +306,7 @@ export class TronPreview {
             </div>
 
             <div class="refresh-note">
-                💡 This preview updates automatically when you modify the template
+                💡 This preview updates automatically when you modify the template or switch files
             </div>
         </body>
         </html>
