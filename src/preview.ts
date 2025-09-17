@@ -160,7 +160,7 @@ export class TronPreview {
         // The default values are passed as a JS object.
         const defaultSampleValues = JSON.stringify(analysis.sampleValues);
         const placeholderInputs = analysis.placeholders.map(
-            key => `<div class="sample-value"><strong>@[${key}]@</strong> → <input type="text" id="input-${key}" value="${analysis.sampleValues[key] ?? ''}" style="width: 220px;" /></div>`
+                key => `<div class="sample-value"><strong>@[${key}]@</strong> <input class="tron-input" type="text" id="input-${key}" value="${analysis.sampleValues[key] ?? ''}" /></div>`
         ).join('');
         return `
         <!DOCTYPE html>
@@ -258,6 +258,29 @@ export class TronPreview {
                 .sample-value {
                     margin: 4px 0;
                     color: var(--vscode-descriptionForeground);
+                }
+                .sample-value {
+                        margin: 8px 0;
+                        color: var(--vscode-descriptionForeground);
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                }
+                .tron-input {
+                        font-family: inherit;
+                        font-size: 1em;
+                        padding: 4px 10px;
+                        border: 1px solid var(--vscode-input-border, #888);
+                        border-radius: 5px;
+                        background: var(--vscode-input-background, #222);
+                        color: var(--vscode-input-foreground, #fff);
+                        transition: border-color 0.2s, box-shadow 0.2s;
+                        width: 220px;
+                }
+                .tron-input:focus {
+                        outline: none;
+                        border-color: var(--vscode-textLink-activeForeground, #007acc);
+                        box-shadow: 0 0 0 2px var(--vscode-textLink-foreground, #007acc33);
                 }
                 .refresh-note {
                     font-size: 12px;
