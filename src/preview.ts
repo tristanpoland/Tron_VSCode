@@ -155,11 +155,13 @@ export class TronPreview {
     }
     
     private getWebviewContent(templateContent: string, analysis: TemplateAnalysis): string {
-        const renderedTemplate = this.renderTemplate(templateContent, analysis.sampleValues);
-        
-        // Get extension logo as webview URI
         const logoUri = this.previewPanel?.webview.asWebviewUri(vscode.Uri.joinPath(this.context.extensionUri, 'branding', 'TRON_logo.png'));
-
+        // The sample values will be editable in the webview. We'll use JS to update the rendered output live.
+        // The default values are passed as a JS object.
+        const defaultSampleValues = JSON.stringify(analysis.sampleValues);
+        const placeholderInputs = analysis.placeholders.map(
+            key => `<div class="sample-value"><strong>@[${key}]@</strong> → <input type="text" id="input-${key}" value="${analysis.sampleValues[key] ?? ''}" style="width: 220px;" /></div>`
+        ).join('');
         return `
         <!DOCTYPE html>
         <html lang="en">
@@ -293,21 +295,54 @@ export class TronPreview {
 
             <div class="section">
                 <div class="section-title">🎯 Sample Values</div>
-                <div class="sample-values">
-                    ${Object.entries(analysis.sampleValues).map(([key, value]) => 
-                        `<div class="sample-value"><strong>@[${key}]@</strong> → "${value}"</div>`
-                    ).join('')}
+                <div class="sample-values" id="sample-values">
+                    ${placeholderInputs}
                 </div>
             </div>
 
             <div class="section">
                 <div class="section-title">✨ Rendered Output (with sample values)</div>
-                <div class="code-block template-rendered">${renderedTemplate}</div>
+                <div class="code-block template-rendered" id="rendered-output"></div>
             </div>
 
             <div class="refresh-note">
-                💡 This preview updates automatically when you modify the template or switch files
+                💡 This preview updates automatically when you modify the template, switch files, or edit sample values
             </div>
+
+            <script>
+                const defaultSampleValues = ${defaultSampleValues};
+                const templateContent = ${JSON.stringify(templateContent)};
+                function renderTemplate(content, values) {
+                    let rendered = content;
+                    for (const [placeholder, value] of Object.entries(values)) {
+                        // Escape regex special characters in placeholder
+                        const safePlaceholder = placeholder.replace(/([.*+?^${'${}'}()|[\]\\])/g, '\\$1');
+                        const regex = new RegExp('@\\[' + safePlaceholder + '\\]@', 'g');
+                        rendered = rendered.replace(regex, value);
+                    }
+                    return rendered;
+                }
+                function getCurrentValues() {
+                    const values = {};
+                    for (const key of Object.keys(defaultSampleValues)) {
+                        const input = document.getElementById('input-' + key);
+                        values[key] = input && input.value !== '' ? input.value : defaultSampleValues[key];
+                    }
+                    return values;
+                }
+                function updateRendered() {
+                    const values = getCurrentValues();
+                    document.getElementById('rendered-output').textContent = renderTemplate(templateContent, values);
+                }
+                for (const key of Object.keys(defaultSampleValues)) {
+                    const input = document.getElementById('input-' + key);
+                    if (input) {
+                        input.addEventListener('input', updateRendered);
+                    }
+                }
+                // Initial render
+                updateRendered();
+            </script>
         </body>
         </html>
         `;
